@@ -17,7 +17,7 @@ There are two arguments of the script:
 | Name | Description | Default value |
 | --- | --- | --- |
 | fileName | String with name of the file to convert | "nodejs-hw1-ex1" |
-| dirName | Path to the directory "homework1/csv" from the current directory | "csv/" |
+| dirName | Path to the directory "/csv" from the current directory | "./src/homework1/csv/" |
 
 Just enter one or two of these arguments to the end of your script:
 
