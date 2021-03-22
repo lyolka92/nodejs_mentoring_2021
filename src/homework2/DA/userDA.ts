@@ -3,6 +3,10 @@ import {
   IUser,
   IUserData,
   IUserDataAccess,
+<<<<<<< HEAD
+=======
+  NoUsersFoundException,
+>>>>>>> implement tasks 2.1, 2.2
   WrongUserIdException,
 } from "../types";
 

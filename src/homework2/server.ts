@@ -11,6 +11,10 @@ import { UserController } from "./routes/user.routes";
 dotenv.config();
 
 const app = express();
+<<<<<<< HEAD
+=======
+const router = express.Router();
+>>>>>>> implement tasks 2.1, 2.2
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
