@@ -1,19 +1,17 @@
 ### GET user
-GET http://localhost:3000/users/f17855aa7ac2
+GET http://localhost:3000/users/f17855aa7ac25
 
 ### GET autosuggested users
 GET http://localhost:3000/users/?limit=2&loginSubstring=example
 
 ### Create new user
-POST http://localhost:3000/users
+POST http://localhost:3000/user
 Content-Type: application/json
 
 {
-  "user": {
-	"login": "Kermit the Frog",
-	"password": "ty345676y",
-	"age": 15
-  }
+  "login": "Kermit the Frog",
+  "password": "ty345676y",
+  "age": 15
 }
 
 ### Update existing user
@@ -21,11 +19,9 @@ PUT http://localhost:3000/users/f17855aa7ac2
 Content-Type: application/json
 
 {
-  "user": {
-    "login": "Zeleboba",
-	"password": "12345test",
-    "age": 52
-  }
+  "login": "Zeleboba",
+  "password": "12345test",
+  "age": 52
 }
 
 ### Delete user

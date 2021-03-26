@@ -1,5 +1,6 @@
 import { Router, Response } from "express";
 import { createValidator, ValidatedRequest } from "express-joi-validation";
+import { UserDA } from "../DA";
 import { UserService } from "../service";
 import {
   ICreateUserRequestSchema,
@@ -10,74 +11,54 @@ import {
   UserSchema,
 } from "../types";
 
-export const UserRouter = (router: Router, service: UserService): void => {
-  const validator = createValidator();
+export const UserController = Router();
+const validator = createValidator();
+const service = new UserService(new UserDA());
 
-  router.get(
-    "/users",
-    (req: ValidatedRequest<IGetUsersRequestSchema>, res: Response) => {
-      try {
-        const { limit, loginSubstring } = req.query;
-        const data = service.GetUsers(limit, loginSubstring);
-        res.status(200).json(data);
-      } catch (err) {
-        res.status(err.statusCode || 500).send(`Error: ${err.message}`);
-      }
-    }
-  );
+UserController.get(
+  "",
+  (req: ValidatedRequest<IGetUsersRequestSchema>, res: Response) => {
+    const { limit, loginSubstring } = req.query;
+    const data = service.GetUsers(limit, loginSubstring);
+    res.status(200).json(data);
+  }
+);
 
-  router.get(
-    "/users/:id",
-    (req: ValidatedRequest<IGetUserRequestSchema>, res: Response) => {
-      try {
-        const { id } = req.params;
-        const data = service.GetUser(id);
-        res.status(200).json(data);
-      } catch (err) {
-        res.status(err.statusCode || 500).send(`Error: ${err.message}`);
-      }
-    }
-  );
+UserController.get(
+  "/:id",
+  (req: ValidatedRequest<IGetUserRequestSchema>, res: Response) => {
+    const { id } = req.params;
+    const data = service.GetUser(id);
+    res.status(200).json(data);
+  }
+);
 
-  router.post(
-    "/users",
-    validator.body(UserSchema),
-    (req: ValidatedRequest<ICreateUserRequestSchema>, res: Response) => {
-      try {
-        const { user } = req.body;
-        const data = service.AddUser(user);
-        res.status(200).json(data);
-      } catch (err) {
-        res.status(err.statusCode || 500).send(`Error: ${err.message}`);
-      }
-    }
-  );
+UserController.post(
+  "",
+  validator.body(UserSchema),
+  (req: ValidatedRequest<ICreateUserRequestSchema>, res: Response) => {
+    const user = req.body;
+    const data = service.AddUser(user);
+    res.status(200).json(data);
+  }
+);
 
-  router.put(
-    "/users/:id",
-    validator.body(UserSchema),
-    (req: ValidatedRequest<IUpdateUserRequestSchema>, res: Response) => {
-      try {
-        const { id } = req.params;
-        const { user } = req.body;
-        const data = service.UpdateUser(id, user);
-        res.status(200).json(data);
-      } catch (err) {
-        res.status(err.statusCode || 500).send(`Error: ${err.message}`);
-      }
-    }
-  );
+UserController.put(
+  "/:id",
+  validator.body(UserSchema),
+  (req: ValidatedRequest<IUpdateUserRequestSchema>, res: Response) => {
+    const { id } = req.params;
+    const user = req.body;
+    const data = service.UpdateUser(id, user);
+    res.status(200).json(data);
+  }
+);
 
-  router.delete(
-    "/users/:id",
-    (req: ValidatedRequest<IDeleteUserRequestSchema>, res: Response) => {
-      try {
-        const { id } = req.params;
-        service.RemoveUser(id);
-        res.status(200).send("User is successfully deleted");
-      } catch (err) {
-        res.status(err.statusCode || 500).send(`Error: ${err.message}`);
-      }
-    }
-  );
-};
+UserController.delete(
+  "/:id",
+  (req: ValidatedRequest<IDeleteUserRequestSchema>, res: Response) => {
+    const { id } = req.params;
+    service.RemoveUser(id);
+    res.status(200).send("User is successfully deleted");
+  }
+);

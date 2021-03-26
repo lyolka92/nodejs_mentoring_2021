@@ -1,7 +1,7 @@
-import * as csv from "csvtojson";
-import * as fs from "fs";
-import * as path from "path";
-import * as minimist from "minimist";
+import csv from "csvtojson";
+import fs from "fs";
+import path from "path";
+import minimist from "minimist";
 import { ParsedArgs } from "minimist";
 
 // Paths

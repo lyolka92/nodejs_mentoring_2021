@@ -8,3 +8,5 @@ export interface IUserData {
   login: string;
   password: string;
 }
+
+export type IUserPresentationData = Omit<IUser, "isDeleted" | "password">;

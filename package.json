@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "hw1t1": "tsc && nodemon dist/homework1/task1-1.js",
-    "hw1t2": "tsc && nodemon dist/homework1/task1-2.js",
-    "hw2": "tsc && nodemon dist/homework2/server.js"
+    "hw1t1": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/homework1/task1-1.ts",
+    "hw1t2": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/homework1/task1-2.ts",
+    "hw2": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/homework2/server.ts"
   },
   "author": "Olga Serova",
   "license": "ISC",
@@ -28,6 +28,7 @@
     "eslint-config-node": "^4.1.0",
     "minimist": "^1.2.5",
     "prettier": "^2.2.1",
+    "ts-node": "^9.1.1",
     "ts-node-dev": "^1.1.6",
     "typescript": "^4.2.3"
   },

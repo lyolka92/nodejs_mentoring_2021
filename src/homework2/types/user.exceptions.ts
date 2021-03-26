@@ -18,9 +18,3 @@ export class WrongUserIdException extends BaseError {
     super("User not found", HttpStatusCode.NOT_FOUND);
   }
 }
-
-export class NoUsersFoundException extends BaseError {
-  constructor() {
-    super("Users not found", HttpStatusCode.NOT_FOUND);
-  }
-}

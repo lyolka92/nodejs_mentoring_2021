@@ -1,6 +1,6 @@
 import { IUserDataAccess } from "./user.da";
-import { IUser, IUserData } from "./user.domain";
-import { WrongUserIdException, NoUsersFoundException } from "./user.exceptions";
+import { IUser, IUserData, IUserPresentationData } from "./user.domain";
+import { WrongUserIdException } from "./user.exceptions";
 import {
   ICreateUserRequestSchema,
   IDeleteUserRequestSchema,
@@ -14,8 +14,8 @@ export {
   IUserDataAccess,
   IUser,
   IUserData,
+  IUserPresentationData,
   WrongUserIdException,
-  NoUsersFoundException,
   ICreateUserRequestSchema,
   IDeleteUserRequestSchema,
   IGetUserRequestSchema,

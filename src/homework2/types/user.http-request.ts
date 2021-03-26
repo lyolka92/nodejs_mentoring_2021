@@ -15,11 +15,9 @@ export interface IGetUsersRequestSchema extends ValidatedRequestSchema {
 
 export interface ICreateUserRequestSchema extends ValidatedRequestSchema {
   [ContainerTypes.Body]: {
-    user: {
-      login: string;
-      password: string;
-      age: number;
-    };
+    login: string;
+    password: string;
+    age: number;
   };
 }
 
