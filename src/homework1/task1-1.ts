@@ -7,7 +7,7 @@ const rl = readline.createInterface({
 
 console.log("Welcome to the string inverter! Enjoy 🌈");
 
-export const recursiveReadline = () => {
+export const recursiveReadline = (): void => {
   rl.question("", (answer: string) => {
     const revertedAnswer = answer.split("").reverse().join("");
     console.log(revertedAnswer + "\n---");
