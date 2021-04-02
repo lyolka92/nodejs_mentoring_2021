@@ -19,7 +19,7 @@ Then you can use the API with `http://localhost:3000/`
 | `users/:id` | GET | id - string | - | - |
 
 ```http request
-GET http://localhost:3000/users/f17855aa7ac2
+GET http://localhost:3000/users/3
 ```
 ---
 #### Get auto-suggest list from limit users
@@ -36,18 +36,16 @@ GET http://localhost:3000/users/?limit=2&loginSubstring=example
 
 | Route | HTTP method | Route params | Query params | Request body |
 | --- | --- | --- | --- | --- |
-| `users/` | POST | - | - | user - object with the following params:<br>login - string<br>password - string<br>age - number |
+| `users/` | POST | - | - | login - string<br>password - string<br>age - number |
 
 ```http request
 POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-  "user": {
-	"login": "Kermit the Frog",
-	"password": "ty345676y",
-	"age": 15
-  }
+  "login": "Kermit the Frog",
+  "password": "ty345676y",
+  "age": 15
 }
 ```
 ---
@@ -55,18 +53,17 @@ Content-Type: application/json
 
 | Route | HTTP method | Route params | Query params | Request body |
 | --- | --- | --- | --- | --- |
-| `users/:id` | POST | id - string | - | user - object with the following params:<br>login - string<br>password - string<br>age - number |
+| `users/:id` | POST | id - string | - | login - string<br>password - string<br>age - number |
 
 ```http request
-PUT http://localhost:3000/users/f17855aa7ac2
+PUT http://localhost:3000/users/5
 Content-Type: application/json
 
 {
-  "user": {
-    "login": "Zeleboba",
-    "password": "12345test",
-    "age": 52
-  }
+  "login": "Zeleboba",
+  "password": "12345test",
+  "age": 52
+  
 }
 ```
 ---
@@ -77,5 +74,29 @@ Content-Type: application/json
 | `users/:id` | DELETE | id - string | - | - |
 
 ```http request
-DELETE http://localhost:3000/users/f17855aa7ac2
+DELETE http://localhost:3000/users/7
+```
+
+## Task 2
+
+**Postgresql and layered architecture.**
+
+### Database scripts
+
+```postgres-sql
+CREATE TABLE users 
+    (id SERIAL PRIMARY KEY,
+    login VARCHAR(30) NOT NULL,
+    password VARCHAR(30) NOT NULL,
+    age INT NOT NULL,
+    "isDeleted" BOOLEAN,
+    "createdAt" DATE,
+    "updatedAt" DATE);
+
+INSERT INTO users
+    (login, password, age, "isDeleted")
+VALUES
+    ('Elmo', '1234qwe', '12', '0'),
+    ('Kermit the Frog', '1234qweRty', '18', '0'),
+    ('Zeleboba', '1qaz!QAZ', '46', '0');
 ```

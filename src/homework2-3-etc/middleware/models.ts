@@ -9,12 +9,7 @@ export class BaseError extends Error {
     Error.captureStackTrace(this);
   }
 }
-enum HttpStatusCode {
-  NOT_FOUND = 404,
-}
 
-export class WrongUserIdException extends BaseError {
-  constructor() {
-    super("User not found", HttpStatusCode.NOT_FOUND);
-  }
+export enum HttpStatusCode {
+  NOT_FOUND = 404,
 }

@@ -6,7 +6,7 @@ import {
   logErrors,
   unknownRouteHandler,
 } from "./middleware";
-import { UserController } from "./routes/user.routes";
+import { UserController } from "./controllers/";
 
 dotenv.config();
 
