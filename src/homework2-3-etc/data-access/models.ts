@@ -1,10 +1,12 @@
-import { user } from "../models";
-import { IUserData } from "../domain";
+import { IUserData, IUserPresentationData } from "../domain";
 
 export interface IUserDataAccess {
-  createUser(data: IUserData): Promise<user>;
-  deleteUser(id: string): Promise<boolean>;
-  getAllUsers(): Promise<user[]>;
-  getUserById(id: string): Promise<user>;
-  updateUser(id: string, data: IUserData): Promise<user>;
+  createUser(data: IUserData): Promise<IUserPresentationData>;
+  deleteUser(id: number): Promise<boolean>;
+  getAllUsers(
+    limit: number,
+    loginSubstring: string
+  ): Promise<IUserPresentationData[]>;
+  getUserById(id: number): Promise<IUserPresentationData>;
+  updateUser(id: number, data: IUserData): Promise<IUserPresentationData>;
 }

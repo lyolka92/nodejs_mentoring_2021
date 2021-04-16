@@ -1,24 +1,21 @@
-import { IUserData } from "../domain";
-import { user } from "../models";
-import { seq } from "./dbConnection";
+import { Op } from "sequelize";
+import { IUserData, IUserPresentationData } from "../domain";
+import { User } from "../models";
 import { IUserDataAccess } from "./models";
 
 export class UserDA implements IUserDataAccess {
-  constructor() {
-    seq.addModels([user]);
-  }
-
-  public async createUser(userData: IUserData): Promise<user> {
-    return await user.create({
+  public async createUser(userData: IUserData): Promise<IUserPresentationData> {
+    const createdUser = await User.create({
       age: userData.age,
       login: userData.login,
       password: userData.password,
       isDeleted: false,
     });
+    return await this.getUserById(createdUser.id);
   }
 
-  public async deleteUser(userId: string): Promise<boolean> {
-    const result = await user.update(
+  public async deleteUser(userId: number): Promise<boolean> {
+    const [updatedUserCount] = await User.update(
       { isDeleted: true },
       {
         where: {
@@ -27,20 +24,37 @@ export class UserDA implements IUserDataAccess {
         },
       }
     );
-    const [updatedUserCount] = result;
-    return Boolean(updatedUserCount);
+    return !!updatedUserCount;
   }
 
-  public async getAllUsers(): Promise<user[]> {
-    return await user.findAll({ where: { isDeleted: false } });
+  public async getAllUsers(
+    limit: number,
+    loginSubstring: string
+  ): Promise<IUserPresentationData[]> {
+    return await User.findAll({
+      where: { isDeleted: false, login: { [Op.substring]: loginSubstring } },
+      order: [["login", "DESC"]],
+      limit,
+      attributes: {
+        exclude: ["password", "isDeleted", "createdAt", "updatedAt"],
+      },
+    });
   }
 
-  public async getUserById(userId: string): Promise<user> {
-    return await user.findOne({ where: { id: userId, isDeleted: false } });
+  public async getUserById(userId: number): Promise<IUserPresentationData> {
+    return await User.findOne({
+      where: { id: userId, isDeleted: false },
+      attributes: {
+        exclude: ["password", "isDeleted", "createdAt", "updatedAt"],
+      },
+    });
   }
 
-  public async updateUser(userId: string, userData: IUserData): Promise<user> {
-    const result = await user.update(
+  public async updateUser(
+    userId: number,
+    userData: IUserData
+  ): Promise<IUserPresentationData> {
+    const [, updatedUsers] = await User.update(
       { login: userData.login, password: userData.password, age: userData.age },
       {
         where: {
@@ -50,7 +64,6 @@ export class UserDA implements IUserDataAccess {
         returning: true,
       }
     );
-    const updatedUserList = result[1];
-    return updatedUserList[0];
+    return this.getUserById(updatedUsers[0].id);
   }
 }
