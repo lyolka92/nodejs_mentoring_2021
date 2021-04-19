@@ -1,0 +1,28 @@
+### GET user
+GET http://localhost:3000/users/9
+
+### GET autosuggested users
+GET http://localhost:3000/users/?limit=6&loginSubstring=Kermit
+
+### Create new user
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "login": "Kermit the Frog",
+  "password": "ty345676y",
+  "age": 15
+}
+
+### Update existing user
+PUT http://localhost:3000/users/9
+Content-Type: application/json
+
+{
+  "login": "Zeleboba",
+  "password": "12345test",
+  "age": 52
+}
+
+### Delete user
+DELETE http://localhost:3000/users/8

@@ -56,6 +56,7 @@
     "comma-spacing": ["error", { "before": false, "after": true }],
     "no-multiple-empty-lines": ["error", { "max": 1, "maxEOF": 1 }],
     "@typescript-eslint/no-floating-promises": "off",
-    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^next" }]
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^next" }],
+    "@typescript-eslint/no-misused-promises": ["error", {"checksVoidReturn": false}]
   }
 }
