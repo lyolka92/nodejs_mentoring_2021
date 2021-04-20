@@ -14,5 +14,5 @@ export const seq = new Sequelize({
 
 seq
   .authenticate()
-  .then(() => console.log("Connected to database"))
-  .catch((err) => console.error("Database connection error", err));
+  .then(() => console.log("✅  Connected to database"))
+  .catch((err) => console.error("⛔️  Database connection error", err));

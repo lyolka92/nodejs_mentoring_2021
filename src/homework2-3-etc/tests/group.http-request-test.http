@@ -1,0 +1,34 @@
+### GET group
+GET http://localhost:3000/groups/f2ded5de-2569-4baa-8c8d-d4d352c4f191
+
+### GET all groups
+GET http://localhost:3000/groups
+
+### Create new group
+POST http://localhost:3000/groups
+Content-Type: application/json
+
+{
+  "name": "Students",
+  "permissions": ["READ", "UPLOAD_FILES"]
+}
+
+### Update existing group
+PUT http://localhost:3000/groups/07342ed8-90c3-42c3-9c4f-818baa74670e
+Content-Type: application/json
+
+{
+  "name": "Teachers",
+  "permissions": ["READ", "UPLOAD_FILES", "WRITE"]
+}
+
+### Delete group
+DELETE http://localhost:3000/groups/61b32c6a-2f89-467c-b1c0-b822cc7379f9
+
+### Add users to group
+POST http://localhost:3000/groups/f2ded5de-2569-4baa-8c8d-d4d352c4f191/users
+Content-Type: application/json
+
+{
+  "ids": ["2edc553c-15c4-4604-b10a-ac781de07662", "732b81e1-c801-45cc-8f26-0cceaa4ec3e3"]
+}

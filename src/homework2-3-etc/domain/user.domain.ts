@@ -1,5 +1,5 @@
 export interface IUser extends IUserData {
-  id: number;
+  id: string;
   isDeleted: boolean;
 }
 
