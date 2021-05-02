@@ -1,11 +1,11 @@
 ### GET user
-GET http://localhost:3000/users/f17855aa7ac25
+GET http://localhost:3000/users/2edc553c-15c4-4604-b10a-ac781de07662
 
 ### GET autosuggested users
-GET http://localhost:3000/users/?limit=2&loginSubstring=example
+GET http://localhost:3000/users/?limit=6&loginSubstring=Kermit
 
 ### Create new user
-POST http://localhost:3000/user
+POST http://localhost:3000/users
 Content-Type: application/json
 
 {
@@ -15,7 +15,7 @@ Content-Type: application/json
 }
 
 ### Update existing user
-PUT http://localhost:3000/users/f17855aa7ac2
+PUT http://localhost:3000/users/9
 Content-Type: application/json
 
 {
@@ -25,4 +25,4 @@ Content-Type: application/json
 }
 
 ### Delete user
-DELETE http://localhost:3000/users/f17855aa7ac2
+DELETE http://localhost:3000/users/8

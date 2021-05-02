@@ -1,7 +1,17 @@
 import { Op } from "sequelize";
-import { IUserData, IUserPresentationData } from "../domain";
-import { User } from "../models";
-import { IUserDataAccess } from "./models";
+import { IUserData, IUserPresentationData } from "../domain/user.domain";
+import { User } from "../models/user.model";
+
+interface IUserDataAccess {
+  createUser(data: IUserData): Promise<IUserPresentationData>;
+  deleteUser(id: string): Promise<boolean>;
+  getAllUsers(
+    limit: number,
+    loginSubstring: string
+  ): Promise<IUserPresentationData[]>;
+  getUserById(id: string): Promise<IUserPresentationData>;
+  updateUser(id: string, data: IUserData): Promise<IUserPresentationData>;
+}
 
 export class UserDA implements IUserDataAccess {
   public async createUser(userData: IUserData): Promise<IUserPresentationData> {
@@ -9,12 +19,11 @@ export class UserDA implements IUserDataAccess {
       age: userData.age,
       login: userData.login,
       password: userData.password,
-      isDeleted: false,
     });
     return await this.getUserById(createdUser.id);
   }
 
-  public async deleteUser(userId: number): Promise<boolean> {
+  public async deleteUser(userId: string): Promise<boolean> {
     const [updatedUserCount] = await User.update(
       { isDeleted: true },
       {
@@ -41,7 +50,7 @@ export class UserDA implements IUserDataAccess {
     });
   }
 
-  public async getUserById(userId: number): Promise<IUserPresentationData> {
+  public async getUserById(userId: string): Promise<IUserPresentationData> {
     return await User.findOne({
       where: { id: userId, isDeleted: false },
       attributes: {
@@ -51,10 +60,10 @@ export class UserDA implements IUserDataAccess {
   }
 
   public async updateUser(
-    userId: number,
+    userId: string,
     userData: IUserData
   ): Promise<IUserPresentationData> {
-    const [, updatedUsers] = await User.update(
+    const { 1: updatedUsers } = await User.update(
       { login: userData.login, password: userData.password, age: userData.age },
       {
         where: {

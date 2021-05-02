@@ -1,5 +1,5 @@
-import { UserDA } from "../data-access";
-import { IUserData, IUserPresentationData } from "../domain";
+import { UserDA } from "../data-access/user.DA";
+import { IUserData, IUserPresentationData } from "../domain/user.domain";
 
 export class UserService {
   constructor(private userDA: UserDA) {}
@@ -9,7 +9,7 @@ export class UserService {
   }
 
   public async GetUser(id: string): Promise<IUserPresentationData> {
-    return await this.userDA.getUserById(Number(id));
+    return await this.userDA.getUserById(id);
   }
 
   public async GetUsers(
@@ -20,13 +20,13 @@ export class UserService {
   }
 
   public async RemoveUser(id: string): Promise<boolean> {
-    return await this.userDA.deleteUser(Number(id));
+    return await this.userDA.deleteUser(id);
   }
 
   public async UpdateUser(
     id: string,
     data: IUserData
   ): Promise<IUserPresentationData> {
-    return await this.userDA.updateUser(Number(id), data);
+    return await this.userDA.updateUser(id, data);
   }
 }

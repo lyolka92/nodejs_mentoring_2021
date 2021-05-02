@@ -1,7 +1,7 @@
 import { Router, Response } from "express";
 import { createValidator, ValidatedRequest } from "express-joi-validation";
-import { UserDA } from "../data-access";
-import { UserService } from "../service";
+import { UserDA } from "../data-access/user.DA";
+import { UserService } from "../service/user.service";
 import {
   ICreateUserRequestSchema,
   IDeleteUserRequestSchema,
@@ -9,7 +9,7 @@ import {
   IGetUsersRequestSchema,
   IUpdateUserRequestSchema,
   UserSchema,
-} from "./models";
+} from "./user.controller-models";
 
 export const UserController = Router();
 const validator = createValidator();
