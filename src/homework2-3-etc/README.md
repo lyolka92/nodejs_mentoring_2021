@@ -1,4 +1,4 @@
-#Homework 2
+# Homework 2
 
 To run the application use the following scripts:
 ```shell
