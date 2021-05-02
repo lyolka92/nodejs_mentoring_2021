@@ -43,6 +43,7 @@ Group.init(
     name: {
       type: new DataTypes.STRING(128),
       allowNull: false,
+      unique: true,
     },
     permissions: {
       type: DataTypes.ARRAY(DataTypes.ENUM(...Object.keys(EPermission))),

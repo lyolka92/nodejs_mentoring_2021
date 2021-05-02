@@ -39,6 +39,7 @@ export interface IAddUsersToGroupRequestSchema extends ValidatedRequestSchema {
 export const GroupSchema = Joi.object().keys({
   name: Joi.string().required(),
   permissions: Joi.array()
+    .unique()
     .items(Joi.string().valid(...Object.keys(EPermission)))
     .required(),
 });

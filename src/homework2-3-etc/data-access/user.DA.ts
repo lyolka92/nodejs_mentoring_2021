@@ -19,7 +19,6 @@ export class UserDA implements IUserDataAccess {
       age: userData.age,
       login: userData.login,
       password: userData.password,
-      isDeleted: false,
     });
     return await this.getUserById(createdUser.id);
   }

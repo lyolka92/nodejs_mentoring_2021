@@ -2,7 +2,7 @@ import { DataTypes, Model, Optional, UUIDV4 } from "sequelize";
 import { IUser as IUserAttributes } from "../domain/user.domain";
 import { seq } from "../init/dbConnection";
 
-type TUserCreationAttributes = Optional<IUserAttributes, "id">;
+type TUserCreationAttributes = Optional<IUserAttributes, "id" | "isDeleted">;
 
 export class User
   extends Model<IUserAttributes, TUserCreationAttributes>
@@ -29,6 +29,7 @@ User.init(
     login: {
       type: new DataTypes.STRING(128),
       allowNull: false,
+      unique: true,
     },
     password: {
       type: new DataTypes.STRING(128),
@@ -41,6 +42,7 @@ User.init(
     isDeleted: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
+      defaultValue: false,
     },
   },
   {
