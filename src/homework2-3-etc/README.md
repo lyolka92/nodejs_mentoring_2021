@@ -2,7 +2,7 @@
 
 To run the application use the following scripts:
 ```shell
-npm run hw2 init db
+npm run hw2-init-db
 npm run hw2
 ```
 Then you can use the API with `http://localhost:3000/`
