@@ -16,5 +16,5 @@ export const seq = new Sequelize({
 
 seq
   .authenticate()
-  .then(() => logger.info("✅ Connected to database"))
-  .catch((err) => logger.crit("⛔️ Database connection error", err));
+  .then(() => logger.info("🍻Connected to database"))
+  .catch((err) => logger.crit("⛔ Database connection error", err));

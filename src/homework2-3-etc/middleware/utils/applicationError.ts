@@ -1,4 +1,5 @@
 import { ValidationErrorItem } from "joi";
+import { IBaseError } from "./baseError";
 
 export enum EApplicationErrorType {
   INTERNAL = "INTERNAL",
@@ -6,10 +7,9 @@ export enum EApplicationErrorType {
   VALIDATION = "VALIDATION",
 }
 
-export interface IApplicationErrorOptions extends Error {
+export interface IApplicationErrorOptions extends IBaseError {
   type: EApplicationErrorType;
   errors: string[] | ValidationErrorItem[];
-  statusCode?: number;
 }
 
 export interface IApplicationError extends IApplicationErrorOptions {

@@ -5,6 +5,7 @@ import {
 } from "./utils/applicationError";
 import { createError } from "./utils/createError";
 import { formatError } from "./utils/formatError";
+import { logger } from "./utils/logger";
 
 const unknownErrorConfig = {
   type: EApplicationErrorType.UNKNOWN,
@@ -15,7 +16,7 @@ const unknownErrorConfig = {
 };
 
 export function errorMiddleware(
-  err: ApplicationError | Error,
+  err: Error | ApplicationError,
   req: Request,
   res: Response
 ): Response {
@@ -29,6 +30,8 @@ export function errorMiddleware(
   } else {
     error = err;
   }
+
+  logger.error(err.message);
 
   return res.status(error.statusCode).send(formatError(error));
 }

@@ -5,8 +5,6 @@ interface IFormattedError extends Error {
 }
 
 export function formatError(error: IApplicationError): IFormattedError {
-  error.statusCode = undefined;
-
   return {
     ...error,
     stack: JSON.stringify(error.stack) || "",

@@ -4,26 +4,20 @@ import { Request, Response } from "express";
 
 const baseLoggerConfig = {
   transports: [new winston.transports.Console()],
-  format: winston.format.json(),
-  requestWhitelist: ["query", "body"],
-  blacklistedMetaFields: ["message", "trace", "process", "os", "stack"],
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.timestamp(),
+    winston.format.simple()
+  ),
 };
 
 export const logger = winston.createLogger(baseLoggerConfig);
 
-const requestLoggerConfig = {
+const loggerMiddlewareConfig = {
   winstonInstance: logger,
   statusLevels: false,
-  level: (req: Request, res: Response) => {
-    switch (true) {
-      case res.statusCode >= 500:
-        return "error";
-      case res.statusCode >= 400:
-        return "warn";
-      default:
-        return "info";
-    }
-  },
+  level: (req: Request, res: Response): string =>
+    res.statusCode >= 400 ? "error" : "info",
 };
 
-export const requestLogger = expressWinston.logger(requestLoggerConfig);
+export const loggerMiddleware = expressWinston.logger(loggerMiddlewareConfig);

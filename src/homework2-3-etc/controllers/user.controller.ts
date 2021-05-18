@@ -1,7 +1,13 @@
 import { Router, Response, NextFunction } from "express";
 import { createValidator, ValidatedRequest } from "express-joi-validation";
 import { UserDA } from "../data-access/user.DA";
-import { UserService } from "../service/user.service";
+import { IUser, IUserData } from "../domain/user.domain";
+import {
+  IGetUsersParams,
+  IUpdateUserParams,
+  IUserId,
+  UserService,
+} from "../service/user.service";
 import {
   ICreateUserRequestSchema,
   IDeleteUserRequestSchema,
@@ -10,7 +16,7 @@ import {
   IUpdateUserRequestSchema,
   UserSchema,
 } from "./user.controller-models";
-import { createError } from "../middleware/utils/createError";
+import { useService } from "./utils/useService";
 
 export const UserController = Router();
 const validator = createValidator();
@@ -23,13 +29,16 @@ UserController.get(
     res: Response,
     next: NextFunction
   ) => {
-    try {
-      const { limit, loginSubstring } = req.query;
-      const data = await service.GetUsers(limit, loginSubstring);
-      res.status(200).json(data);
-    } catch (err) {
-      next(createError(err));
-    }
+    const { limit, loginSubstring } = req.query;
+    await useService<IUser[], IGetUsersParams>(
+      res,
+      next,
+      service.GetUsers.bind(service),
+      {
+        limit,
+        loginSubstring,
+      }
+    );
   }
 );
 
@@ -40,13 +49,10 @@ UserController.get(
     res: Response,
     next: NextFunction
   ) => {
-    try {
-      const { id } = req.params;
-      const data = await service.GetUser(id);
-      res.status(200).json(data);
-    } catch (err) {
-      next(createError(err));
-    }
+    const { id } = req.params;
+    await useService<IUser, IUserId>(res, next, service.GetUser.bind(service), {
+      id,
+    });
   }
 );
 
@@ -58,13 +64,13 @@ UserController.post(
     res: Response,
     next: NextFunction
   ) => {
-    try {
-      const user = req.body;
-      const data = await service.AddUser(user);
-      res.status(200).json(data);
-    } catch (err) {
-      next(createError(err));
-    }
+    const user = req.body;
+    await useService<IUser, IUserData>(
+      res,
+      next,
+      service.AddUser.bind(service),
+      user
+    );
   }
 );
 
@@ -76,14 +82,14 @@ UserController.put(
     res: Response,
     next: NextFunction
   ) => {
-    try {
-      const { id } = req.params;
-      const user = req.body;
-      const data = await service.UpdateUser(id, user);
-      res.status(200).json(data);
-    } catch (err) {
-      next(createError(err));
-    }
+    const { id } = req.params;
+    const data = req.body;
+    await useService<IUser, IUpdateUserParams>(
+      res,
+      next,
+      service.UpdateUser.bind(service),
+      { id, data }
+    );
   }
 );
 
@@ -95,13 +101,13 @@ UserController.delete(
     next: NextFunction
   ) => {
     const { id } = req.params;
-    try {
-      const result = await service.RemoveUser(id);
-      res
-        .status(200)
-        .send(`User is ${result ? "successfully" : "not"} deleted`);
-    } catch (err) {
-      next(createError(err));
-    }
+    await useService<boolean, IUserId>(
+      res,
+      next,
+      service.RemoveUser.bind(service),
+      {
+        id,
+      }
+    );
   }
 );
