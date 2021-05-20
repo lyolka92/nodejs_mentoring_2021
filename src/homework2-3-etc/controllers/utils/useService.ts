@@ -30,6 +30,6 @@ export async function useService<E, P>(
     const data = await serviceMethod(params);
     res.status(200).json(data);
   } catch (err) {
-    return next(createError(err));
+    next(createError(err));
   }
 }

@@ -17,10 +17,13 @@ import {
   UserSchema,
 } from "./user.controller-models";
 import { useService } from "./utils/useService";
+import { checkTokenMiddleware } from "../middleware/checkToken.middleware";
 
 export const UserController = Router();
 const validator = createValidator();
 const service = new UserService(new UserDA());
+
+UserController.use(checkTokenMiddleware);
 
 UserController.get(
   "",

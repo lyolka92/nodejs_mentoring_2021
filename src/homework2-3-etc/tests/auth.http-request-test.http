@@ -1,0 +1,8 @@
+### Authenticate user
+POST http://localhost:3000/authenticate
+Content-Type: application/json
+
+{
+  "login": "Kermit the Frog",
+  "password": "1234qweRty"
+}
