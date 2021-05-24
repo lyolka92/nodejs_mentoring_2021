@@ -2,12 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import { createValidator, ValidatedRequest } from "express-joi-validation";
 import { GroupDA } from "../data-access/group.DA";
 import { IGroup, IGroupData } from "../domain/group.domain";
-import {
-  GroupService,
-  IAddUsersToGroupParams,
-  IGroupId,
-  IUpdateGroupParams,
-} from "../service/group.service";
+import { GroupService } from "../service/group.service";
 import {
   GroupSchema,
   IAddUsersToGroupRequestSchema,
@@ -16,10 +11,15 @@ import {
   IdsSchema,
   IGetGroupRequestSchema,
   IUpdateGroupRequestSchema,
-} from "./group.controller-models";
+} from "./group.controller.models";
 import { useService } from "./utils/useService";
 import { checkTokenMiddleware } from "../middleware/checkToken.middleware";
 import { checkPermissionsMiddleware } from "../middleware/checkPermissions.middleware";
+import {
+  IAddUsersToGroupParams,
+  IGroupId,
+  IUpdateGroupParams,
+} from "../service/group.service.models";
 
 export const GroupController = Router();
 const validator = createValidator();

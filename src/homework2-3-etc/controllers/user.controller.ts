@@ -1,13 +1,10 @@
 import { Router, Response, NextFunction } from "express";
 import { createValidator, ValidatedRequest } from "express-joi-validation";
 import { UserDA } from "../data-access/user.DA";
-import { IUser, IUserData } from "../domain/user.domain";
-import {
-  IGetUsersParams,
-  IUpdateUserParams,
-  IUserId,
-  UserService,
-} from "../service/user.service";
+import { IUserData, IUserPresentationData } from "../domain/user.domain";
+import { UserService } from "../service/user.service";
+import { useService } from "./utils/useService";
+import { checkTokenMiddleware } from "../middleware/checkToken.middleware";
 import {
   ICreateUserRequestSchema,
   IDeleteUserRequestSchema,
@@ -15,6 +12,12 @@ import {
   IGetUsersRequestSchema,
   IUpdateUserRequestSchema,
   UserSchema,
+} from "./user.controller.models";
+import {
+  IGetUsersParams,
+  IUpdateUserParams,
+  IUserId,
+} from "../service/user.service.models";
 } from "./user.controller-models";
 import { useService } from "./utils/useService";
 import { checkTokenMiddleware } from "../middleware/checkToken.middleware";
@@ -35,7 +38,7 @@ UserController.get(
     next: NextFunction
   ) => {
     const { limit, loginSubstring } = req.query;
-    await useService<IUser[], IGetUsersParams>(
+    await useService<IUserPresentationData[], IGetUsersParams>(
       res,
       next,
       service.GetUsers.bind(service),
@@ -55,9 +58,14 @@ UserController.get(
     next: NextFunction
   ) => {
     const { id } = req.params;
-    await useService<IUser, IUserId>(res, next, service.GetUser.bind(service), {
-      id,
-    });
+    await useService<IUserPresentationData, IUserId>(
+      res,
+      next,
+      service.GetUser.bind(service),
+      {
+        id,
+      }
+    );
   }
 );
 
@@ -70,7 +78,7 @@ UserController.post(
     next: NextFunction
   ) => {
     const user = req.body;
-    await useService<IUser, IUserData>(
+    await useService<IUserPresentationData, IUserData>(
       res,
       next,
       service.AddUser.bind(service),
@@ -89,7 +97,7 @@ UserController.put(
   ) => {
     const { id } = req.params;
     const data = req.body;
-    await useService<IUser, IUpdateUserParams>(
+    await useService<IUserPresentationData, IUpdateUserParams>(
       res,
       next,
       service.UpdateUser.bind(service),

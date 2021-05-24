@@ -6,19 +6,7 @@ import {
 } from "../domain/user.domain";
 import { User } from "../models/user.model";
 import { BaseError } from "../middleware/utils/baseError";
-import { Group } from "../models/group.model";
-
-interface IUserDataAccess {
-  createUser(data: IUserData): Promise<IUserPresentationData>;
-  deleteUser(id: string): Promise<boolean>;
-  getAllUsers(
-    limit: number,
-    loginSubstring: string
-  ): Promise<IUserPresentationData[]>;
-  getUserById(id: string): Promise<IUserPresentationData>;
-  getUserByLogin(userLogin: string): Promise<IUserWithGroups>;
-  updateUser(id: string, data: IUserData): Promise<IUserPresentationData>;
-}
+import { IUserDataAccess } from "./user.DA.models";
 
 export class UserDA implements IUserDataAccess {
   public async createUser(userData: IUserData): Promise<IUserPresentationData> {

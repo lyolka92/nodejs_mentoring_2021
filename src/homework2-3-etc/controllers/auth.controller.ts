@@ -3,7 +3,7 @@ import { createValidator, ValidatedRequest } from "express-joi-validation";
 import { UserDA } from "../data-access/user.DA";
 import { IUserCredentials } from "../domain/auth.domain";
 import { AuthService } from "../service/auth.service";
-import { AuthSchema, IAuthRequestSchema } from "./auth.controller-models";
+import { AuthSchema, IAuthRequestSchema } from "./auth.controller.models";
 import { useService } from "./utils/useService";
 
 export const AuthController = Router();

@@ -3,16 +3,17 @@ import * as jwt from "jsonwebtoken";
 import { UserDA } from "../data-access/user.DA";
 import { IUserCredentials } from "../domain/auth.domain";
 import { BaseError } from "../middleware/utils/baseError";
+import { IAuthService } from "./auth.service.models";
 
 dotenv.config();
 
-export class AuthService {
+export class AuthService implements IAuthService {
   constructor(private userDA: UserDA) {}
 
   public async AuthenticateUser({
     login,
     password,
-  }: IUserCredentials): Promise<string | void> {
+  }: IUserCredentials): Promise<string> {
     const user = await this.userDA.getUserByLogin(login);
 
     if (user.password !== password) {
