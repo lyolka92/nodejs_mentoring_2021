@@ -4,26 +4,41 @@ import { UserDA } from "../data-access/user.DA";
 import { IUserCredentials } from "../domain/auth.domain";
 import { AuthService } from "../service/auth.service";
 import { AuthSchema, IAuthRequestSchema } from "./auth.controller.models";
-import { useService } from "./utils/useService";
+import { useServiceWithParams } from "./utils/useService";
+import { Controller } from "./models";
 
-export const AuthController = Router();
-const validator = createValidator();
-const service = new AuthService(new UserDA());
+export class AuthController implements Controller {
+  public path = "/authenticate";
+  public router = Router();
+  public service = new AuthService(new UserDA());
+  private validator = createValidator();
+  private readonly isLoggerOn: boolean;
 
-AuthController.post(
-  "",
-  validator.body(AuthSchema),
-  async (
+  constructor(isLoggerOn = true) {
+    this.isLoggerOn = isLoggerOn;
+    this.initRouter();
+  }
+
+  private initRouter() {
+    this.router.post(
+      this.path,
+      this.validator.body(AuthSchema),
+      this.authenticateUser
+    );
+  }
+
+  private authenticateUser = async (
     req: ValidatedRequest<IAuthRequestSchema>,
     res: Response,
     next: NextFunction
   ) => {
     const userCredentials = req.body;
-    await useService<string, IUserCredentials>(
+    await useServiceWithParams<string, IUserCredentials>(
       res,
       next,
-      service.AuthenticateUser.bind(service),
-      userCredentials
+      this.service.AuthenticateUser.bind(this.service),
+      userCredentials,
+      this.isLoggerOn
     );
-  }
-);
+  };
+}

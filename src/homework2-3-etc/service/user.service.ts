@@ -1,4 +1,3 @@
-import { UserDA } from "../data-access/user.DA";
 import { IUserData, IUserPresentationData } from "../domain/user.domain";
 import {
   IGetUsersParams,
@@ -6,6 +5,7 @@ import {
   IUserId,
   IUserService,
 } from "./user.service.models";
+import { UserDA } from "../data-access/user.DA";
 
 export class UserService implements IUserService {
   constructor(private userDA: UserDA) {}

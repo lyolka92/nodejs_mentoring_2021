@@ -3,7 +3,7 @@ import { createValidator, ValidatedRequest } from "express-joi-validation";
 import { UserDA } from "../data-access/user.DA";
 import { IUserData, IUserPresentationData } from "../domain/user.domain";
 import { UserService } from "../service/user.service";
-import { useService } from "./utils/useService";
+import { useServiceWithParams } from "./utils/useService";
 import { checkTokenMiddleware } from "../middleware/checkToken.middleware";
 import {
   ICreateUserRequestSchema,
@@ -18,109 +18,118 @@ import {
   IUpdateUserParams,
   IUserId,
 } from "../service/user.service.models";
+import { Controller } from "./models";
 } from "./user.controller-models";
 import { useService } from "./utils/useService";
 import { checkTokenMiddleware } from "../middleware/checkToken.middleware";
 import { checkPermissionsMiddleware } from "../middleware/checkPermissions.middleware";
 
-export const UserController = Router();
-const validator = createValidator();
-const service = new UserService(new UserDA());
+export class UserController implements Controller {
+  public path = "/users";
+  public router = Router();
+  private service = new UserService(new UserDA());
+  private validator = createValidator();
+  private readonly isLoggerOn: boolean;
 
-UserController.use(checkTokenMiddleware);
-UserController.use(checkPermissionsMiddleware);
+  constructor(isLoggerOn = true) {
+    this.isLoggerOn = isLoggerOn;
+    this.initRouter();
+  }
 
-UserController.get(
-  "",
-  async (
+  private initRouter() {
+    this.router.use(checkTokenMiddleware);
+    this.router.use(checkPermissionsMiddleware);
+    this.router.get(this.path, this.getUsers);
+    this.router.get(`${this.path}/:id`, this.getUser);
+    this.router.post(this.path, this.validator.body(UserSchema), this.addUser);
+    this.router.put(
+      `${this.path}/:id`,
+      this.validator.body(UserSchema),
+      this.updateUser
+    );
+    this.router.delete(`${this.path}/:id`, this.deleteUser);
+  }
+
+  private getUsers = async (
     req: ValidatedRequest<IGetUsersRequestSchema>,
     res: Response,
     next: NextFunction
   ) => {
     const { limit, loginSubstring } = req.query;
-    await useService<IUserPresentationData[], IGetUsersParams>(
+    await useServiceWithParams<IUserPresentationData[], IGetUsersParams>(
       res,
       next,
-      service.GetUsers.bind(service),
+      this.service.GetUsers.bind(this.service),
       {
         limit,
         loginSubstring,
-      }
+      },
+      this.isLoggerOn
     );
-  }
-);
+  };
 
-UserController.get(
-  "/:id",
-  async (
+  private getUser = async (
     req: ValidatedRequest<IGetUserRequestSchema>,
     res: Response,
     next: NextFunction
   ) => {
     const { id } = req.params;
-    await useService<IUserPresentationData, IUserId>(
+    await useServiceWithParams<IUserPresentationData, IUserId>(
       res,
       next,
-      service.GetUser.bind(service),
+      this.service.GetUser.bind(this.service),
       {
         id,
-      }
+      },
+      this.isLoggerOn
     );
-  }
-);
+  };
 
-UserController.post(
-  "",
-  validator.body(UserSchema),
-  async (
+  private addUser = async (
     req: ValidatedRequest<ICreateUserRequestSchema>,
     res: Response,
     next: NextFunction
   ) => {
     const user = req.body;
-    await useService<IUserPresentationData, IUserData>(
+    await useServiceWithParams<IUserPresentationData, IUserData>(
       res,
       next,
-      service.AddUser.bind(service),
-      user
+      this.service.AddUser.bind(this.service),
+      user,
+      this.isLoggerOn
     );
-  }
-);
+  };
 
-UserController.put(
-  "/:id",
-  validator.body(UserSchema),
-  async (
+  private updateUser = async (
     req: ValidatedRequest<IUpdateUserRequestSchema>,
     res: Response,
     next: NextFunction
   ) => {
     const { id } = req.params;
     const data = req.body;
-    await useService<IUserPresentationData, IUpdateUserParams>(
+    await useServiceWithParams<IUserPresentationData, IUpdateUserParams>(
       res,
       next,
-      service.UpdateUser.bind(service),
-      { id, data }
+      this.service.UpdateUser.bind(this.service),
+      { id, data },
+      this.isLoggerOn
     );
-  }
-);
+  };
 
-UserController.delete(
-  "/:id",
-  async (
+  private deleteUser = async (
     req: ValidatedRequest<IDeleteUserRequestSchema>,
     res: Response,
     next: NextFunction
   ) => {
     const { id } = req.params;
-    await useService<boolean, IUserId>(
+    await useServiceWithParams<boolean, IUserId>(
       res,
       next,
-      service.RemoveUser.bind(service),
+      this.service.RemoveUser.bind(this.service),
       {
         id,
-      }
+      },
+      this.isLoggerOn
     );
-  }
-);
+  };
+}
