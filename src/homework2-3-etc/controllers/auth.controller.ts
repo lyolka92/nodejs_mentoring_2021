@@ -1,11 +1,11 @@
-import { NextFunction, Response, Router } from "express";
-import { createValidator, ValidatedRequest } from "express-joi-validation";
-import { UserDA } from "../data-access/user.DA";
-import { IUserCredentials } from "../domain/auth.domain";
-import { AuthService } from "../service/auth.service";
 import { AuthSchema, IAuthRequestSchema } from "./auth.controller.models";
-import { useServiceWithParams } from "./utils/useService";
+import { NextFunction, Response, Router } from "express";
+import { ValidatedRequest, createValidator } from "express-joi-validation";
+import { AuthService } from "../service/auth.service";
 import { Controller } from "./models";
+import { IUserCredentials } from "../domain/auth.domain";
+import { UserDA } from "../data-access/user.DA";
+import { useServiceWithParams } from "./utils/useService";
 
 export class AuthController implements Controller {
   public path = "/authenticate";

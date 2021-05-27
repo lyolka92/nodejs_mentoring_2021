@@ -1,0 +1,7 @@
+{
+  "preset": "ts-jest",
+  "coverageDirectory": "./src/homework2-3-etc/coverage",
+  "testMatch": ["**/?(*.)+(test).ts"],
+  "resetMocks": true,
+  "clearMocks": true
+}

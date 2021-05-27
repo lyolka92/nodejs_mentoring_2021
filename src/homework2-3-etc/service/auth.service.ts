@@ -20,13 +20,13 @@ export class AuthService implements IAuthService {
       throw new BaseError("Bad login/password combination", 401);
     } else {
       const userPermissions = new Set();
-      user.groups.forEach((group) =>
+      user.groups?.forEach((group) =>
         group.permissions.forEach((permission) =>
           userPermissions.add(permission)
         )
       );
       const payload = { sub: user.id, permissions: [...userPermissions] };
-      return jwt.sign(payload, process.env.JWT_SECRET, {
+      return jwt.sign(payload, String(process.env.JWT_SECRET), {
         expiresIn: 10000,
       });
     }

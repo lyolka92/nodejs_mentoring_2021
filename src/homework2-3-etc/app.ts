@@ -1,23 +1,23 @@
-import express from "express";
+import { logger, loggerMiddleware } from "./middleware/utils/logger";
+import { Controller } from "./controllers/models";
 import cors from "cors";
 import dotenv from "dotenv";
-import { Controller } from "./controllers/models";
-import { logger, loggerMiddleware } from "./middleware/utils/logger";
-import { unhandledRejectionMiddleware } from "./middleware/unhandledRejection.middleware";
-import { uncaughtExceptionMiddleware } from "./middleware/uncaughtException.middleware";
 import { errorMiddleware } from "./middleware/error.middleware";
+import express from "express";
+import { uncaughtExceptionMiddleware } from "./middleware/uncaughtException.middleware";
+import { unhandledRejectionMiddleware } from "./middleware/unhandledRejection.middleware";
 
 dotenv.config();
 
 export class App {
   public app: express.Application;
-  private PORT = process.env.PORT || "3000";
-  private SERVER_ADDRESS = `http://${process.env.HOST}:${this.PORT}`;
   private readonly isLoggerOn: boolean;
+  private readonly PORT: string;
   private server;
 
-  constructor(controllers: Controller[], isLoggerOn = true) {
+  constructor(controllers: Controller[], isLoggerOn = true, port?: string) {
     this.isLoggerOn = isLoggerOn;
+    this.PORT = port || process.env.PORT || "3000";
     this.app = express();
 
     this.useCors();
@@ -29,7 +29,9 @@ export class App {
     this.server = this.app.listen(this.PORT, () => {
       this.isLoggerOn &&
         logger.info(
-          `✨ Server is started and running on ${this.SERVER_ADDRESS}`
+          `✨ Server is started and running on http://${
+            process.env.HOST || "localhost"
+          }:${this.PORT}`
         );
     });
   }

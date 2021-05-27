@@ -1,31 +1,29 @@
-import { NextFunction, Request, Response, Router } from "express";
-import { createValidator, ValidatedRequest } from "express-joi-validation";
-import { GroupDA } from "../data-access/group.DA";
-import { IGroup, IGroupData } from "../domain/group.domain";
-import { GroupService } from "../service/group.service";
 import {
   GroupSchema,
   IAddUsersToGroupRequestSchema,
   ICreateGroupRequestSchema,
   IDeleteGroupRequestSchema,
-  IdsSchema,
   IGetGroupRequestSchema,
   IUpdateGroupRequestSchema,
+  IdsSchema,
 } from "./group.controller.models";
-import {
-  useServiceWithParams,
-  useServiceWithoutParams,
-} from "./utils/useService";
-import { IGroup, IGroupData } from "../domain/group.domain";
-import { checkTokenMiddleware } from "../middleware/checkToken.middleware";
-import { GroupService } from "../service/group.service";
-import { checkPermissionsMiddleware } from "../middleware/checkPermissions.middleware";
 import {
   IAddUsersToGroupParams,
   IGroupId,
   IUpdateGroupParams,
 } from "../service/group.service.models";
+import { IGroup, IGroupData } from "../domain/group.domain";
+import { NextFunction, Request, Response, Router } from "express";
+import { ValidatedRequest, createValidator } from "express-joi-validation";
+import {
+  useServiceWithParams,
+  useServiceWithoutParams,
+} from "./utils/useService";
 import { Controller } from "./models";
+import { GroupDA } from "../data-access/group.DA";
+import { GroupService } from "../service/group.service";
+import { checkPermissionsMiddleware } from "../middleware/checkPermissions.middleware";
+import { checkTokenMiddleware } from "../middleware/checkToken.middleware";
 
 export class GroupController implements Controller {
   public path = "/groups";

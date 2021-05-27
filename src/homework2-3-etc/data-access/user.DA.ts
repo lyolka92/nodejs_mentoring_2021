@@ -7,6 +7,7 @@ import {
 import { User } from "../models/user.model";
 import { BaseError } from "../middleware/utils/baseError";
 import { IUserDataAccess } from "./user.DA.models";
+import { Group } from "../models/group.model";
 
 export class UserDA implements IUserDataAccess {
   public async createUser(userData: IUserData): Promise<IUserPresentationData> {

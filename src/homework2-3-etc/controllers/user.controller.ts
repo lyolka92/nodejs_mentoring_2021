@@ -1,10 +1,3 @@
-import { Router, Response, NextFunction } from "express";
-import { createValidator, ValidatedRequest } from "express-joi-validation";
-import { UserDA } from "../data-access/user.DA";
-import { IUserData, IUserPresentationData } from "../domain/user.domain";
-import { UserService } from "../service/user.service";
-import { useServiceWithParams } from "./utils/useService";
-import { checkTokenMiddleware } from "../middleware/checkToken.middleware";
 import {
   ICreateUserRequestSchema,
   IDeleteUserRequestSchema,
@@ -18,11 +11,15 @@ import {
   IUpdateUserParams,
   IUserId,
 } from "../service/user.service.models";
+import { IUserData, IUserPresentationData } from "../domain/user.domain";
+import { NextFunction, Response, Router } from "express";
+import { ValidatedRequest, createValidator } from "express-joi-validation";
 import { Controller } from "./models";
-} from "./user.controller-models";
-import { useService } from "./utils/useService";
-import { checkTokenMiddleware } from "../middleware/checkToken.middleware";
+import { UserDA } from "../data-access/user.DA";
+import { UserService } from "../service/user.service";
 import { checkPermissionsMiddleware } from "../middleware/checkPermissions.middleware";
+import { checkTokenMiddleware } from "../middleware/checkToken.middleware";
+import { useServiceWithParams } from "./utils/useService";
 
 export class UserController implements Controller {
   public path = "/users";

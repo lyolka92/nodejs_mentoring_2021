@@ -7,11 +7,12 @@ GET http://localhost:3000/users/?limit=6&loginSubstring=Kermit
 ### Create new user
 POST http://localhost:3000/users
 Content-Type: application/json
+x-access-token: UnitTest
 
 {
-  "login": "Kermit the Frog",
-  "password": "ty345676y",
-  "age": 15
+  "login": "Greta_Jenkins",
+  "password": "PaSsWorD123",
+  "age": 5
 }
 
 ### Update existing user
