@@ -19,12 +19,14 @@ import {
 } from "./group.controller-models";
 import { useService } from "./utils/useService";
 import { checkTokenMiddleware } from "../middleware/checkToken.middleware";
+import { checkPermissionsMiddleware } from "../middleware/checkPermissions.middleware";
 
 export const GroupController = Router();
 const validator = createValidator();
 const service = new GroupService(new GroupDA());
 
 GroupController.use(checkTokenMiddleware);
+GroupController.use(checkPermissionsMiddleware);
 
 GroupController.get(
   "",

@@ -1,7 +1,12 @@
 import { Op } from "sequelize";
-import { IUser, IUserData, IUserPresentationData } from "../domain/user.domain";
+import {
+  IUserData,
+  IUserPresentationData,
+  IUserWithGroups,
+} from "../domain/user.domain";
 import { User } from "../models/user.model";
 import { BaseError } from "../middleware/utils/baseError";
+import { Group } from "../models/group.model";
 
 interface IUserDataAccess {
   createUser(data: IUserData): Promise<IUserPresentationData>;
@@ -11,7 +16,7 @@ interface IUserDataAccess {
     loginSubstring: string
   ): Promise<IUserPresentationData[]>;
   getUserById(id: string): Promise<IUserPresentationData>;
-  getUserByLogin(userLogin: string): Promise<IUser>;
+  getUserByLogin(userLogin: string): Promise<IUserWithGroups>;
   updateUser(id: string, data: IUserData): Promise<IUserPresentationData>;
 }
 
@@ -72,11 +77,16 @@ export class UserDA implements IUserDataAccess {
     }
   }
 
-  public async getUserByLogin(userLogin: string): Promise<IUser> {
+  public async getUserByLogin(userLogin: string): Promise<IUserWithGroups> {
     const user = await User.findOne({
       where: { login: userLogin },
       attributes: {
         exclude: ["createdAt", "updatedAt"],
+      },
+      include: {
+        model: Group,
+        as: "groups",
+        attributes: ["permissions"],
       },
     });
 

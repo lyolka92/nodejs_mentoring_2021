@@ -18,9 +18,15 @@ export class AuthService {
     if (user.password !== password) {
       throw new BaseError("Bad login/password combination", 401);
     } else {
-      const payload = { sub: user.id };
+      const userPermissions = new Set();
+      user.groups.forEach((group) =>
+        group.permissions.forEach((permission) =>
+          userPermissions.add(permission)
+        )
+      );
+      const payload = { sub: user.id, permissions: [...userPermissions] };
       return jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: 100,
+        expiresIn: 10000,
       });
     }
   }

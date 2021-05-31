@@ -35,7 +35,7 @@
     "comma-dangle": ["error", "always-multiline"],
     "quotes": ["error", "double"],
     // Spacing
-    "indent": ["error", 2],
+    "indent": ["error", 2, {"ignoredNodes":  ["SwitchCase"]}],
     "space-infix-ops": "error",
     "brace-style": "error",
     "space-before-blocks": "error",
