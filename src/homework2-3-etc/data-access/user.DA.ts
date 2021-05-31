@@ -81,7 +81,7 @@ export class UserDA implements IUserDataAccess {
     });
 
     if (!user || user.isDeleted) {
-      throw new BaseError(`User with login ${userLogin} not found`, 404);
+      throw new BaseError("Bad login/password combination", 401);
     } else {
       return user;
     }
