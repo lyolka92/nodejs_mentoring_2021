@@ -1,26 +1,27 @@
 import { Op } from "sequelize";
-import { IUserData, IUserPresentationData } from "../domain/user.domain";
+import {
+  IUserData,
+  IUserPresentationData,
+  IUserWithGroups,
+} from "../domain/user.domain";
 import { User } from "../models/user.model";
 import { BaseError } from "../middleware/utils/baseError";
+import { Group } from "../models/group.model";
 
 interface IUserDataAccess {
-  createUser(data: IUserData): Promise<IUserPresentationData | void>;
-  deleteUser(id: string): Promise<boolean | void>;
+  createUser(data: IUserData): Promise<IUserPresentationData>;
+  deleteUser(id: string): Promise<boolean>;
   getAllUsers(
     limit: number,
     loginSubstring: string
   ): Promise<IUserPresentationData[]>;
-  getUserById(id: string): Promise<IUserPresentationData | void>;
-  updateUser(
-    id: string,
-    data: IUserData
-  ): Promise<IUserPresentationData | void>;
+  getUserById(id: string): Promise<IUserPresentationData>;
+  getUserByLogin(userLogin: string): Promise<IUserWithGroups>;
+  updateUser(id: string, data: IUserData): Promise<IUserPresentationData>;
 }
 
 export class UserDA implements IUserDataAccess {
-  public async createUser(
-    userData: IUserData
-  ): Promise<IUserPresentationData | void> {
+  public async createUser(userData: IUserData): Promise<IUserPresentationData> {
     const createdUser = await User.create({
       age: userData.age,
       login: userData.login,
@@ -29,7 +30,7 @@ export class UserDA implements IUserDataAccess {
     return await this.getUserById(createdUser.id);
   }
 
-  public async deleteUser(userId: string): Promise<boolean | void> {
+  public async deleteUser(userId: string): Promise<boolean> {
     const [updatedUserCount] = await User.update(
       { isDeleted: true },
       {
@@ -61,9 +62,7 @@ export class UserDA implements IUserDataAccess {
     });
   }
 
-  public async getUserById(
-    userId: string
-  ): Promise<IUserPresentationData | void> {
+  public async getUserById(userId: string): Promise<IUserPresentationData> {
     const user = await User.findOne({
       where: { id: userId, isDeleted: false },
       attributes: {
@@ -78,10 +77,30 @@ export class UserDA implements IUserDataAccess {
     }
   }
 
+  public async getUserByLogin(userLogin: string): Promise<IUserWithGroups> {
+    const user = await User.findOne({
+      where: { login: userLogin },
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+      include: {
+        model: Group,
+        as: "groups",
+        attributes: ["permissions"],
+      },
+    });
+
+    if (!user || user.isDeleted) {
+      throw new BaseError("Bad login/password combination", 401);
+    } else {
+      return user;
+    }
+  }
+
   public async updateUser(
     userId: string,
     userData: IUserData
-  ): Promise<IUserPresentationData | void> {
+  ): Promise<IUserPresentationData> {
     const { 1: updatedUsers } = await User.update(
       { login: userData.login, password: userData.password, age: userData.age },
       {

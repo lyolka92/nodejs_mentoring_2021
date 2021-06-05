@@ -1,3 +1,5 @@
+import { Group } from "../models/group.model";
+
 export interface IUser extends IUserData {
   id: string;
   isDeleted: boolean;
@@ -10,3 +12,7 @@ export interface IUserData {
 }
 
 export type IUserPresentationData = Omit<IUser, "isDeleted" | "password">;
+
+export interface IUserWithGroups extends IUser {
+  groups?: Group[];
+}

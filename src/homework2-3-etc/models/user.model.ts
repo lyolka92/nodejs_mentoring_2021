@@ -1,6 +1,7 @@
 import { DataTypes, Model, Optional, UUIDV4 } from "sequelize";
 import { IUser as IUserAttributes } from "../domain/user.domain";
 import { seq } from "../init/dbConnection";
+import { Group } from "./group.model";
 
 type TUserCreationAttributes = Optional<IUserAttributes, "id" | "isDeleted">;
 
@@ -16,6 +17,8 @@ export class User
   // timestamps
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public groups?: Group[];
 }
 
 User.init(

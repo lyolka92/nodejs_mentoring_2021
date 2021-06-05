@@ -11,12 +11,15 @@
   "author": "Olga Serova",
   "license": "ISC",
   "dependencies": {
+    "atob": "^2.1.2",
+    "cors": "^2.8.5",
     "csvtojson": "^2.0.10",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-joi-validation": "^5.0.0",
     "express-winston": "^4.1.0",
     "joi": "^17.4.0",
+    "jsonwebtoken": "^8.5.1",
     "morgan-body": "^2.6.5",
     "nodemon": "^2.0.7",
     "pg": "^8.5.1",
@@ -25,7 +28,10 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@types/atob": "^2.1.2",
+    "@types/cors": "^2.8.10",
     "@types/express": "^4.17.11",
+    "@types/jsonwebtoken": "^8.5.1",
     "@types/minimist": "^1.2.1",
     "@types/node": "^14.14.37",
     "@types/pg": "^7.14.11",
