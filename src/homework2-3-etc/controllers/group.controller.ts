@@ -1,136 +1,158 @@
-import { NextFunction, Request, Response, Router } from "express";
-import { createValidator, ValidatedRequest } from "express-joi-validation";
-import { GroupDA } from "../data-access/group.DA";
-import { IGroup, IGroupData } from "../domain/group.domain";
-import {
-  GroupService,
-  IAddUsersToGroupParams,
-  IGroupId,
-  IUpdateGroupParams,
-} from "../service/group.service";
 import {
   GroupSchema,
   IAddUsersToGroupRequestSchema,
   ICreateGroupRequestSchema,
   IDeleteGroupRequestSchema,
-  IdsSchema,
   IGetGroupRequestSchema,
   IUpdateGroupRequestSchema,
-} from "./group.controller-models";
-import { useService } from "./utils/useService";
-import { checkTokenMiddleware } from "../middleware/checkToken.middleware";
+  IdsSchema,
+} from "./group.controller.models";
+import {
+  IAddUsersToGroupParams,
+  IGroupId,
+  IUpdateGroupParams,
+} from "../service/group.service.models";
+import { IGroup, IGroupData } from "../domain/group.domain";
+import { NextFunction, Request, Response, Router } from "express";
+import { ValidatedRequest, createValidator } from "express-joi-validation";
+import {
+  useServiceWithParams,
+  useServiceWithoutParams,
+} from "./utils/useService";
+import { Controller } from "./models";
+import { GroupDA } from "../data-access/group.DA";
+import { GroupService } from "../service/group.service";
 import { checkPermissionsMiddleware } from "../middleware/checkPermissions.middleware";
+import { checkTokenMiddleware } from "../middleware/checkToken.middleware";
 
-export const GroupController = Router();
-const validator = createValidator();
-const service = new GroupService(new GroupDA());
+export class GroupController implements Controller {
+  public path = "/groups";
+  public router = Router();
+  public service = new GroupService(new GroupDA());
+  private validator = createValidator();
+  private readonly isLoggerOn: boolean;
 
-GroupController.use(checkTokenMiddleware);
-GroupController.use(checkPermissionsMiddleware);
+  constructor(isLoggerOn = true) {
+    this.isLoggerOn = isLoggerOn;
+    this.initRouter();
+  }
 
-GroupController.get(
-  "",
-  async (req: Request, res: Response, next: NextFunction) => {
-    await useService<IGroup[], null>(
+  private initRouter() {
+    this.router.use(checkTokenMiddleware);
+    this.router.use(checkPermissionsMiddleware);
+    this.router.get(this.path, this.getGroups);
+    this.router.get(`${this.path}/:id`, this.getGroup);
+    this.router.post(
+      this.path,
+      this.validator.body(GroupSchema),
+      this.addGroup
+    );
+    this.router.post(
+      `${this.path}/:id/users`,
+      this.validator.body(IdsSchema),
+      this.addUsersToGroup
+    );
+    this.router.put(
+      `${this.path}/:id`,
+      this.validator.body(GroupSchema),
+      this.updateGroup
+    );
+    this.router.delete(`${this.path}/:id`, this.deleteGroup);
+  }
+
+  private getGroups = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    await useServiceWithoutParams<IGroup[]>(
       res,
       next,
-      service.GetGroups.bind(service)
+      this.service.GetGroups.bind(this.service),
+      this.isLoggerOn
     );
-  }
-);
+  };
 
-GroupController.get(
-  "/:id",
-  async (
+  private getGroup = async (
     req: ValidatedRequest<IGetGroupRequestSchema>,
     res: Response,
     next: NextFunction
   ) => {
     const { id } = req.params;
-    await useService<IGroup, IGroupId>(
+    await useServiceWithParams<IGroup, IGroupId>(
       res,
       next,
-      service.GetGroup.bind(service),
-      { id }
+      this.service.GetGroup.bind(this.service),
+      { id },
+      this.isLoggerOn
     );
-  }
-);
+  };
 
-GroupController.post(
-  "",
-  validator.body(GroupSchema),
-  async (
+  private addGroup = async (
     req: ValidatedRequest<ICreateGroupRequestSchema>,
     res: Response,
     next: NextFunction
   ) => {
     const group = req.body;
-    await useService<IGroup, IGroupData>(
+    await useServiceWithParams<IGroup, IGroupData>(
       res,
       next,
-      service.AddGroup.bind(service),
-      group
+      this.service.AddGroup.bind(this.service),
+      group,
+      this.isLoggerOn
     );
-  }
-);
+  };
 
-GroupController.post(
-  "/:id/users",
-  validator.body(IdsSchema),
-  async (
+  private addUsersToGroup = async (
     req: ValidatedRequest<IAddUsersToGroupRequestSchema>,
     res: Response,
     next: NextFunction
   ) => {
     const { id: groupId } = req.params;
     const { ids: userIds } = req.body;
-    await useService<IGroup, IAddUsersToGroupParams>(
+    await useServiceWithParams<IGroup, IAddUsersToGroupParams>(
       res,
       next,
-      service.AddUsersToGroup.bind(service),
+      this.service.AddUsersToGroup.bind(this.service),
       {
         groupId,
         userIds,
-      }
+      },
+      this.isLoggerOn
     );
-  }
-);
+  };
 
-GroupController.put(
-  "/:id",
-  validator.body(GroupSchema),
-  async (
+  private updateGroup = async (
     req: ValidatedRequest<IUpdateGroupRequestSchema>,
     res: Response,
     next: NextFunction
   ) => {
     const { id } = req.params;
     const group = req.body;
-    await useService<IGroup, IUpdateGroupParams>(
+    await useServiceWithParams<IGroup, IUpdateGroupParams>(
       res,
       next,
-      service.UpdateGroup.bind(service),
+      this.service.UpdateGroup.bind(this.service),
       {
         id,
         group,
-      }
+      },
+      this.isLoggerOn
     );
-  }
-);
+  };
 
-GroupController.delete(
-  "/:id",
-  async (
+  private deleteGroup = async (
     req: ValidatedRequest<IDeleteGroupRequestSchema>,
     res: Response,
     next: NextFunction
   ) => {
     const { id } = req.params;
-    await useService<boolean, IGroupId>(
+    await useServiceWithParams<boolean, IGroupId>(
       res,
       next,
-      service.RemoveGroup.bind(service),
-      { id }
+      this.service.RemoveGroup.bind(this.service),
+      { id },
+      this.isLoggerOn
     );
-  }
-);
+  };
+}

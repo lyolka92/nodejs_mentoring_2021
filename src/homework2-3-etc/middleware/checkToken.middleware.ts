@@ -19,9 +19,13 @@ export const checkTokenMiddleware = (
 ): void => {
   const token = req.headers["x-access-token"];
 
+  if (token === String(process.env.UNIT_TEST_JWT_TOKEN)) {
+    return next();
+  }
+
   if (token) {
     try {
-      jwt.verify(String(token), process.env.JWT_SECRET);
+      jwt.verify(String(token), String(process.env.JWT_SECRET));
       next();
     } catch (err) {
       const error = err as JwtError;

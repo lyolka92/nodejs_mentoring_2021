@@ -4,31 +4,21 @@ import { seq } from "../init/dbConnection";
 import { BaseError } from "../middleware/utils/baseError";
 import { Group } from "../models/group.model";
 import { User } from "../models/user.model";
-
-interface IGroupDataAccess {
-  addUsersToGroup(groupId: string, userIds: string[]): Promise<Group | void>;
-  createGroup(data: IGroupData): Promise<Group | void>;
-  deleteGroup(id: string): Promise<boolean | void>;
-  getAllGroups(): Promise<Group[]>;
-  getGroupById(id: string): Promise<Group | void>;
-  updateGroup(id: string, data: IGroupData): Promise<Group | void>;
-}
+import { IGroupDataAccess } from "./group.DA.models";
 
 export class GroupDA implements IGroupDataAccess {
   public async addUsersToGroup(
     groupId: string,
     userIds: string[]
-  ): Promise<Group | void> {
+  ): Promise<Group> {
     return await seq.transaction(async (t) => {
       const group = await this.getGroupById(groupId, t);
-      if (group) {
-        await group.addUsers(userIds, { transaction: t });
-        return group;
-      }
+      await group.addUsers(userIds, { transaction: t });
+      return group;
     });
   }
 
-  public async createGroup(groupData: IGroupData): Promise<Group | void> {
+  public async createGroup(groupData: IGroupData): Promise<Group> {
     const createdGroup = await Group.create({
       name: groupData.name,
       permissions: groupData.permissions,
@@ -36,7 +26,7 @@ export class GroupDA implements IGroupDataAccess {
     return await this.getGroupById(createdGroup.id);
   }
 
-  public async deleteGroup(groupId: string): Promise<boolean | void> {
+  public async deleteGroup(groupId: string): Promise<boolean> {
     const deletedGroupsCount = await Group.destroy({
       where: {
         id: groupId,
@@ -61,7 +51,7 @@ export class GroupDA implements IGroupDataAccess {
   public async getGroupById(
     groupId: string,
     transaction?: Transaction
-  ): Promise<Group | void> {
+  ): Promise<Group> {
     const group = await Group.findOne({
       include: {
         model: User,
@@ -85,7 +75,7 @@ export class GroupDA implements IGroupDataAccess {
   public async updateGroup(
     groupId: string,
     groupData: IGroupData
-  ): Promise<Group | void> {
+  ): Promise<Group> {
     const { 1: updatedGroups } = await Group.update(
       {
         name: groupData.name,
